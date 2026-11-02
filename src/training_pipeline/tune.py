@@ -63,6 +63,11 @@ def tune_model(
 ) -> Tuple[Dict, Dict]:
     """Run Optuna tuning; save best model; return (best_params, best_metrics)."""
     if tracking_uri:
+        tracking_uri = str(tracking_uri)
+        if "://" not in tracking_uri and not tracking_uri.startswith("file:"):
+            tracking_path = Path(tracking_uri).resolve()
+            tracking_path.mkdir(parents=True, exist_ok=True)
+            tracking_uri = tracking_path.as_uri()
         mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment(experiment_name)
 
